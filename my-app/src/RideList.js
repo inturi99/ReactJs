@@ -3,11 +3,20 @@ import './App.css';
 import AppNavbar from './AppNavbar';
 import Pagination from './Pagination';
 import { Container, Table } from 'reactstrap';
-import data from './data.json';
+import { CSVLink } from 'react-csv';
+import datajson from './data.json';
 class Home extends Component {
 	constructor() {
 		super();
-		var exampleItems = data.rides.currentrides;
+		let exampleItems = datajson.rides.currentrides.map(it => ({
+			ride_id: it.ride_id,
+			status: it.status,
+			transactionId: '--',
+			last_name: it.Passenger.last_name,
+			first_name: it.Passenger.first_name,
+			submittedOn: '--',
+			ETA: it.ETA,
+		}));
 
 		this.state = {
 			exampleItems: exampleItems,
@@ -28,21 +37,52 @@ class Home extends Component {
 			return (
 				<tr key={item.ride_id}>
 					<td style={{ whiteSpace: 'nowrap' }}>{item.status}</td>
-					<td style={{ whiteSpace: 'nowrap' }}>{'--'}</td>
-					<td style={{ whiteSpace: 'nowrap' }}>{item.Passenger.last_name}</td>
-					<td style={{ whiteSpace: 'nowrap' }}>{item.Passenger.first_name}</td>
-					<td style={{ whiteSpace: 'nowrap' }}>{'--'}</td>
+					<td style={{ whiteSpace: 'nowrap' }}>{item.transactionId}</td>
+					<td style={{ whiteSpace: 'nowrap' }}>{item.last_name}</td>
+					<td style={{ whiteSpace: 'nowrap' }}>{item.first_name}</td>
+					<td style={{ whiteSpace: 'nowrap' }}>{item.submittedOn}</td>
 					<td style={{ whiteSpace: 'nowrap' }}>{item.ride_id}</td>
 					<td style={{ whiteSpace: 'nowrap' }}>{item.ETA}</td>
 				</tr>
 			);
 		});
 
+		const headers1 = [
+			{ label: 'status', key: 'status' },
+			{ label: 'transactionId', key: 'transactionId' },
+			{ label: 'lastname', key: 'lastname' },
+			{ label: 'firstname', key: 'firstname' },
+			{ label: 'submittedOn', key: 'submittedOn' },
+		];
+		const datacsv1 = this.state.pageOfItems.map(it => ({
+			status: it.status,
+			transactionId: it.transactionId,
+			lastname: it.last_name,
+			firstname: it.first_name,
+			submittedOn: it.submittedOn,
+		}));
+
+		let headers = [
+			{ label: 'First Name', key: 'firstname' },
+			{ label: 'Last Name', key: 'lastname' },
+			{ label: 'Email', key: 'email' },
+		];
+
+		let datacsv = [
+			{ firstname: 'Ahmed', lastname: 'Tomi', email: 'ah@smthing.co.com' },
+			{ firstname: 'Raed', lastname: 'Labes', email: 'rl@smthing.co.com' },
+			{ firstname: 'Yezzi', lastname: 'Min l3b', email: 'ymin@cocococo.com' },
+		];
+
 		return (
 			<div>
 				<AppNavbar />
 				<Container fluid>
 					<h3>Ride Request Report</h3>
+					<CSVLink data={datacsv} headers={headers}>
+						Download me
+					</CSVLink>
+					;
 					<Table className="mt-4">
 						<thead>
 							<tr>
